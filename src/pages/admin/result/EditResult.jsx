@@ -8,38 +8,23 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 
-const EditPoint = ({ selectedItem, setOpenEditPoint }) => {
-  const [long, setLong] = useState(selectedItem.value.long);
-  const [lat, setLat] = useState(selectedItem.value.lat);
-  const [image, setImage] = useState(null);
+const EditResult = ({ selectedItem, setOpenEditResult }) => {
+  const [nameFish, setNameFish] = useState(selectedItem.value.nameFish);
+  const [resultCatch, setResultCatch] = useState(
+    selectedItem.value.resultCatch
+  );
+  const [waterDepth, setWaterDepth] = useState(selectedItem.value.waterDepth);
 
-  const editPoint = async (e) => {
+  const editResult = async (e) => {
     try {
       e.preventDefault();
 
-      const storageRef = refStorage(
-        getStorage(app),
-        `/images/${selectedItem.uuid}`
-      );
-
-      if (!image) {
-        await update(ref(db, `/points/${selectedItem.key}`), {
-          long,
-          lat,
-        });
-        setOpenEditPoint(false);
-      } else {
-        const snapshot = await uploadBytes(storageRef, image);
-        const imageUrl = await getDownloadURL(snapshot.ref);
-
-        await update(ref(db, `/points/${selectedItem.key}`), {
-          long,
-          lat,
-          imageUrl: imageUrl,
-        });
-
-        setOpenEditPoint(false);
-      }
+      await update(ref(db, `/result/${selectedItem.key}`), {
+        nameFish,
+        resultCatch,
+        waterDepth,
+      });
+      setOpenEditResult(false);
     } catch (error) {
       // Handle the error here
       console.error("An error occurred:", error);
@@ -52,7 +37,7 @@ const EditPoint = ({ selectedItem, setOpenEditPoint }) => {
       <div class="bg-white p-8 rounded-md shadow-lg ">
         <div className="flex justify-end">
           <button
-            onClick={() => setOpenEditPoint(false)}
+            onClick={() => setOpenEditResult(false)}
             className="w-12 h-12 text-xl bg-white rounded-full btn text-primary "
           >
             <svg
@@ -72,33 +57,36 @@ const EditPoint = ({ selectedItem, setOpenEditPoint }) => {
             </svg>
           </button>
         </div>
-        <form onSubmit={editPoint} className="mt-6">
+        <form onSubmit={editResult} className="mt-6">
           <div className="mt-4">
-            <label className="text-lg font-semibold ">Latitude</label>
+            <label className="text-lg font-semibold ">Nama Ikan</label>
             <input
               type="text"
-              placeholder="Type here"
-              value={lat}
-              onChange={(e) => setLat(e.target.value)}
+              placeholder=""
+              value={nameFish}
+              onChange={(e) => setNameFish(e.target.value)}
               className="w-full mt-3 input input-bordered"
             />
           </div>
           <div>
-            <label className="text-lg font-semibold ">Longitude</label>
+            <label className="text-lg font-semibold ">
+              Hasil Tangkapan (kg)
+            </label>
             <input
-              type="text"
-              placeholder="Type here"
-              value={long}
-              onChange={(e) => setLong(e.target.value)}
+              type="number"
+              placeholder=""
+              value={resultCatch}
+              onChange={(e) => setResultCatch(e.target.value)}
               className="w-full mt-3 input input-bordered"
             />
           </div>
           <div className="mt-4">
-            <label className="text-lg font-semibold ">Gambar</label>
+            <label className="text-lg font-semibold ">Kedalaman Air</label>
             <input
-              type="file"
-              onChange={(e) => setImage(e.target.files[0])}
-              className="w-full mt-3 file-input file-input-bordered"
+              type="number"
+              value={waterDepth}
+              onChange={(e) => setWaterDepth(e.target.value)}
+              className="w-full mt-3 input input-bordered"
             />
           </div>
           <button type="submit" className="w-full mt-6 btn btn-primary">
@@ -110,4 +98,4 @@ const EditPoint = ({ selectedItem, setOpenEditPoint }) => {
   );
 };
 
-export default EditPoint;
+export default EditResult;

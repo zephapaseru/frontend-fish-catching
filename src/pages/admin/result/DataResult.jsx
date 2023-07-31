@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
-import AddPoint from "./AddPoint";
+import AddPoint from "./AddResult";
 import { db } from "../../../config/firebase";
 import { ref, onValue, remove } from "firebase/database";
 import ModalDelete from "../../../components/modal/ModalDelete";
-import EditPoint from "./EditPoint";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
+import AddResult from "./AddResult";
+import EditResult from "./EditResult";
 
-const DataPoint = () => {
-  const [openAddPoint, setOpenAddPoint] = useState(false);
-  const [openEditPoint, setOpenEditPoint] = useState(false);
+const DataResult = () => {
+  const [openAddResult, setOpenAddResult] = useState(false);
+  const [openEditResult, setOpenEditResult] = useState(false);
   const [data, setData] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [openModalDelete, setOpenModalDelete] = useState(false);
@@ -16,7 +17,7 @@ const DataPoint = () => {
   const itemsPerPage = 5; // Number of items to display per page
 
   const getData = () => {
-    const dbRef = ref(db, "points");
+    const dbRef = ref(db, "result");
     onValue(dbRef, (snapshot) => {
       let data = [];
       snapshot.forEach((childSnapshot) => {
@@ -37,7 +38,7 @@ const DataPoint = () => {
     if (selectedItem) {
       const { key } = selectedItem;
       try {
-        remove(ref(db, `points/${key}`)).then(() => {
+        remove(ref(db, `result/${key}`)).then(() => {
           setOpenModalDelete(false);
           setSelectedItem(null);
         });
@@ -65,36 +66,38 @@ const DataPoint = () => {
     <>
       <div className="flex flex-col space-y-5">
         <h3 className="text-[#191635] font-bold text-xl">
-          Daftar Titik Penangkapan Ikan
+          Daftar Hasil Penangkapan Ikan
         </h3>
         <button
-          onClick={() => setOpenAddPoint(true)}
+          onClick={() => setOpenAddResult(true)}
           className="max-w-[200px] btn btn-primary"
         >
-          Tambah Titik
+          Tambah
         </button>
         {data.length !== 0 ? (
           <div className="w-full overflow-x-auto">
             <table className="table w-full">
               <thead>
                 <tr>
-                  <th>Titik Koordinat</th>
+                  <th>Nama Ikan</th>
+                  <th>Hasil Tangkapan (kg)</th>
+                  <th>Kedalaman Air</th>
                   <th className="text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {getCurrentItems().map((item, index) => (
                   <tr key={index + 1}>
-                    <td className="px-6 py-4">
-                      {item.value.lat}, {item.value.long}
-                    </td>
+                    <td className="px-6 py-4">{item.value.nameFish}</td>
+                    <td className="px-6 py-4">{item.value.resultCatch}</td>
+                    <td className="px-6 py-4">{item.value.waterDepth}</td>
                     <td className="px-6 py-4">
                       <div className="flex justify-center px-6 py-4 space-x-4 text-right">
                         <button
                           className="btn w-28 btn-sm"
                           onClick={() => {
                             setSelectedItem(item);
-                            setOpenEditPoint(true);
+                            setOpenEditResult(true);
                           }}
                         >
                           Edit
@@ -142,11 +145,11 @@ const DataPoint = () => {
           </button>
         </div>
       )}
-      {openAddPoint && <AddPoint setOpenAddPoint={setOpenAddPoint} />}
-      {openEditPoint && (
-        <EditPoint
+      {openAddResult && <AddResult setOpenAddResult={setOpenAddResult} />}
+      {openEditResult && (
+        <EditResult
           selectedItem={selectedItem}
-          setOpenEditPoint={setOpenEditPoint}
+          setOpenEditResult={setOpenEditResult}
         />
       )}
       {openModalDelete && (
@@ -164,4 +167,4 @@ const DataPoint = () => {
   );
 };
 
-export default DataPoint;
+export default DataResult;

@@ -1,36 +1,24 @@
 import React, { useState } from "react";
 import { uid } from "uid";
-import { db, app } from "../../../config/firebase";
+import { db } from "../../../config/firebase";
 import { set, ref } from "firebase/database";
-import {
-  getStorage,
-  ref as refStorage,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
 
-const AddPoint = ({ setOpenAddPoint }) => {
-  const [long, setLong] = useState("");
-  const [lat, setLat] = useState("");
-  const [image, setImage] = useState(null);
+const AddResult = ({ setOpenAddResult }) => {
+  const [nameFish, setNameFish] = useState("");
+  const [resultCatch, setResultCatch] = useState(0);
+  const [waterDepth, setWaterDepth] = useState(0);
 
-  const AddPoint = async (e) => {
+  const AddResult = async (e) => {
     e.preventDefault();
     const uuid = uid();
-
-    const storageRef = refStorage(getStorage(app), `/images/${uuid}`);
-
     try {
-      const snapshot = await uploadBytes(storageRef, image);
-      const imageUrl = await getDownloadURL(snapshot.ref);
-
-      await set(ref(db, `/points/${uuid}`), {
-        long,
-        lat,
-        imageUrl: imageUrl,
+      await set(ref(db, `/result/${uuid}`), {
+        nameFish,
+        resultCatch,
+        waterDepth,
       });
 
-      setOpenAddPoint(false);
+      setOpenAddResult(false);
     } catch (error) {
       console.error("Error adding point:", error);
     }
@@ -40,7 +28,7 @@ const AddPoint = ({ setOpenAddPoint }) => {
       <div class="bg-white p-8 rounded-md shadow-lg ">
         <div className="flex justify-end">
           <button
-            onClick={() => setOpenAddPoint(false)}
+            onClick={() => setOpenAddResult(false)}
             className="w-12 h-12 text-xl bg-white rounded-full btn text-primary "
           >
             <svg
@@ -60,33 +48,36 @@ const AddPoint = ({ setOpenAddPoint }) => {
             </svg>
           </button>
         </div>
-        <form onSubmit={AddPoint} className="mt-6">
+        <form onSubmit={AddResult} className="mt-6">
           <div className="mt-4">
-            <label className="text-lg font-semibold ">Latitude</label>
+            <label className="text-lg font-semibold ">Nama Ikan</label>
             <input
               type="text"
-              placeholder="Type here"
-              value={lat}
-              onChange={(e) => setLat(e.target.value)}
+              placeholder=""
+              value={nameFish}
+              onChange={(e) => setNameFish(e.target.value)}
               className="w-full mt-3 input input-bordered"
             />
           </div>
           <div>
-            <label className="text-lg font-semibold ">Longitude</label>
+            <label className="text-lg font-semibold ">
+              Hasil Tangkapan (kg)
+            </label>
             <input
-              type="text"
-              placeholder="Type here"
-              value={long}
-              onChange={(e) => setLong(e.target.value)}
+              type="number"
+              placeholder=""
+              value={resultCatch}
+              onChange={(e) => setResultCatch(e.target.value)}
               className="w-full mt-3 input input-bordered"
             />
           </div>
           <div className="mt-4">
-            <label className="text-lg font-semibold ">Gambar</label>
+            <label className="text-lg font-semibold ">Kedalaman Air</label>
             <input
-              type="file"
-              onChange={(e) => setImage(e.target.files[0])}
-              className="w-full mt-3 file-input file-input-bordered"
+              type="number"
+              value={waterDepth}
+              onChange={(e) => setWaterDepth(e.target.value)}
+              className="w-full mt-3 input input-bordered"
             />
           </div>
           <button type="submit" className="w-full mt-6 btn btn-primary">
@@ -98,4 +89,4 @@ const AddPoint = ({ setOpenAddPoint }) => {
   );
 };
 
-export default AddPoint;
+export default AddResult;

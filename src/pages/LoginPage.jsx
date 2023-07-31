@@ -71,8 +71,8 @@ const LoginPage = () => {
             </div>
             <form className="w-full mt-4">
               <div className="flex flex-col items-center justify-center">
-                <div className="flex flex-col w-full max-w-xs space-y-3">
-                  <label htmlFor="email" className="label__input">
+                <div className="flex flex-col w-full max-w-xs space-y-2">
+                  <label htmlFor="email" className="font-semibold">
                     Email
                   </label>
                   <input
@@ -84,7 +84,7 @@ const LoginPage = () => {
                   />
                 </div>
                 <div className="flex flex-col w-full max-w-xs mt-4 space-y-3">
-                  <label htmlFor="password" className="label__input">
+                  <label htmlFor="password" className="font-semibold">
                     Kata Sandi
                   </label>
                   <input

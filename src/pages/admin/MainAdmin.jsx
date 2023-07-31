@@ -13,6 +13,8 @@ import { FaFish } from "react-icons/fa";
 import { BiMatch } from "react-icons/bi";
 import { TbLogout } from "react-icons/tb";
 import DataPoint from "./point/DataPoint";
+import DataVariable from "./variable/DataVariable";
+import DataResult from "./result/DataResult";
 
 const MainAdmin = () => {
   let navigate = useNavigate();
@@ -94,6 +96,8 @@ const MainAdmin = () => {
           <main className="flex-1 p-10">
             <Routes>
               <Route path="/point" element={<DataPoint />} />
+              <Route path="/variable" element={<DataVariable />} />
+              <Route path="/result" element={<DataResult />} />
             </Routes>
           </main>
         </div>

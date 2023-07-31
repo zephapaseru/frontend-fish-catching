@@ -5,6 +5,11 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import { Icon, divIcon, point } from "leaflet";
 import CardDetailData from "../../components/card/CardDetailData";
 import Legend from "../../components/legend/Legend";
+import Logo from "../../assets/ic_logo.png";
+import { Link, Routes, Route } from "react-router-dom";
+import { AiFillHome, AiOutlineInfoCircle } from "react-icons/ai";
+import { MdOutlineHome } from "react-icons/md";
+import Information from "./info/Information";
 
 const createClusterCustomIcon = function (cluster) {
   return new divIcon({
@@ -177,30 +182,80 @@ const indonesiaZoom = 6; // Adjust the zoom level as needed
 const MainUser = () => {
   return (
     <>
-      <MapContainer center={northIndonesiaCenter} zoom={indonesiaZoom}>
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <MarkerClusterGroup
-          chunkedLoading
-          iconCreateFunction={createClusterCustomIcon}
-        >
-          {markersWithImageLink.map((marker) => (
-            <Marker
-              position={marker.geocode}
-              icon={
-                marker.cluster === 1 ? customIconCluster1 : customIconCluster2
+      <header className="z-10 flex items-center justify-between w-full px-8 py-4 text-white sticky-header bg-primary">
+        <div className="flex items-center space-x-3">
+          <img src={Logo} alt="Logo" className="w-14 h-14" />
+          <div>
+            <h1 className="text-sm font-bold">SISTEM INFORMASI GEOGRAFIS</h1>
+            <p className="text-xs">Pemetaan Daerah Penangkapan Ikan Laut</p>
+          </div>
+        </div>
+        {
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <div className="">
+                  <select
+                    name=""
+                    id=""
+                    className="w-[200px] max-w-sm text-primary input input-bordered"
+                  >
+                    <option value="">2020</option>
+                    <option value="2021">2021</option>
+                  </select>
+                </div>
               }
-            >
-              <Popup>
-                <CardDetailData marker={marker} />
-              </Popup>
-            </Marker>
-          ))}
-        </MarkerClusterGroup>
-        <Legend />
-      </MapContainer>
+            />
+          </Routes>
+        }
+        <div className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center ">
+            <AiFillHome className="mr-4" />
+            Beranda
+          </Link>
+          <Link to="/info" className="flex items-center ">
+            <AiOutlineInfoCircle className="mr-4" />
+            Hasil Tangkapan
+          </Link>
+        </div>
+      </header>
+      {
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <MapContainer center={northIndonesiaCenter} zoom={indonesiaZoom}>
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <MarkerClusterGroup
+                  chunkedLoading
+                  iconCreateFunction={createClusterCustomIcon}
+                >
+                  {markersWithImageLink.map((marker) => (
+                    <Marker
+                      position={marker.geocode}
+                      icon={
+                        marker.cluster === 1
+                          ? customIconCluster1
+                          : customIconCluster2
+                      }
+                    >
+                      <Popup>
+                        <CardDetailData marker={marker} />
+                      </Popup>
+                    </Marker>
+                  ))}
+                </MarkerClusterGroup>
+                <Legend />
+              </MapContainer>
+            }
+          />
+          <Route path="/info" element={<Information />} />
+        </Routes>
+      }
     </>
   );
 };
