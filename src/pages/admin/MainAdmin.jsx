@@ -15,6 +15,7 @@ import { TbLogout } from "react-icons/tb";
 import DataPoint from "./point/DataPoint";
 import DataVariable from "./variable/DataVariable";
 import DataResult from "./result/DataResult";
+import Home from "./home/Home";
 
 const MainAdmin = () => {
   let navigate = useNavigate();
@@ -95,6 +96,7 @@ const MainAdmin = () => {
           </aside>
           <main className="flex-1 p-10">
             <Routes>
+              <Route path="/home" element={<Home />} />
               <Route path="/point" element={<DataPoint />} />
               <Route path="/variable" element={<DataVariable />} />
               <Route path="/result" element={<DataResult />} />

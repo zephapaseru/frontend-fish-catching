@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { db } from "../../../config/firebase";
+import { ref, onValue } from "firebase/database";
 
 const AddVariable = ({ setOpenAddVariable, pushData }) => {
+  const [dataPoints, setDataPoints] = useState([]);
   const [item, setItem] = useState({
     id: 0,
     latitude: "",
@@ -15,11 +18,36 @@ const AddVariable = ({ setOpenAddVariable, pushData }) => {
 
   const [id, setId] = useState(0);
 
+  const getDataPoints = () => {
+    const dbRef = ref(db, "points");
+    onValue(dbRef, (snapshot) => {
+      let data = [];
+      snapshot.forEach((childSnapshot) => {
+        let key = childSnapshot.key;
+        let value = childSnapshot.val();
+
+        data.push({
+          key: key,
+          value: value,
+        });
+      });
+      console.log(data);
+      setDataPoints(data);
+      if (data.length > 0) {
+        setItem((prevItem) => ({
+          ...prevItem,
+          latitude: data[0].value.lat,
+          longitude: data[0].value.long,
+        }));
+      }
+    });
+  };
+
   const pushToArray = (e) => {
     e.preventDefault();
     pushData(item);
-    setId((prevId) => prevId + 1); // Increment the id by 1 after pushing data
-    setItem((prevItem) => ({ ...prevItem, id })); // Set the 'id' field in the 'item' state
+    setId((prevId) => prevId + 1);
+    setItem((prevItem) => ({ ...prevItem, id }));
   };
 
   const handleChange = (e) => {
@@ -29,6 +57,10 @@ const AddVariable = ({ setOpenAddVariable, pushData }) => {
       [name]: value,
     }));
   };
+
+  useEffect(() => {
+    getDataPoints();
+  }, []);
 
   return (
     <>
@@ -62,15 +94,29 @@ const AddVariable = ({ setOpenAddVariable, pushData }) => {
           <form onSubmit={pushToArray}>
             <div className="flex flex-col space-y-3">
               <div>
-                <label className="font-semibold">Titik Koordinat</label>
+                <label className="font-semibold">Latitude</label>
                 <select
                   name="latitude"
                   value={item.latitude}
                   onChange={handleChange}
                   className="w-full mt-2 input input-bordered"
                 >
-                  <option value="">dakba</option>
-                  <option value="">dakba</option>
+                  {dataPoints.map((item, index) => (
+                    <option value={item.value.lat}>{item.value.lat}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="font-semibold">Longitude</label>
+                <select
+                  name="longitude"
+                  value={item.longitude}
+                  onChange={handleChange}
+                  className="w-full mt-2 input input-bordered"
+                >
+                  {dataPoints.map((item, index) => (
+                    <option value={item.value.long}>{item.value.long}</option>
+                  ))}
                 </select>
               </div>
               <div>
