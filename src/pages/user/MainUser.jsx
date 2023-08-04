@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -10,6 +10,8 @@ import { Link, Routes, Route } from "react-router-dom";
 import { AiFillHome, AiOutlineInfoCircle } from "react-icons/ai";
 import { MdOutlineHome } from "react-icons/md";
 import Information from "./info/Information";
+import { db } from "../../config/firebase";
+import { ref, onValue, get } from "firebase/database";
 
 const createClusterCustomIcon = function (cluster) {
   return new divIcon({
@@ -180,6 +182,58 @@ const markersWithImageLink = markers.map((marker) => ({
 const northIndonesiaCenter = [0.7893, 113.9213];
 const indonesiaZoom = 6; // Adjust the zoom level as needed
 const MainUser = () => {
+  const [dataCluster, setDataCluster] = useState([]);
+  const [yearly, setYearly] = useState([]);
+  const [dataYear, setDataYear] = useState([]);
+  const [selectedYear, setSelectedYear] = useState(yearly[0]);
+  const [combinedData, setCombinedData] = useState([]);
+
+  const fetchDataCluster = (selectedYear) => {
+    const Ref = ref(db, "cluster");
+    onValue(Ref, (snapshot) => {
+      const data = snapshot.val();
+      if (selectedYear && data[selectedYear] && data[selectedYear].result) {
+        const yearData = data[selectedYear].result.data;
+        setDataCluster(yearData);
+        console.log(yearData);
+      }
+    });
+  };
+
+  const fetchDataYear = (selectedYear) => {
+    const Ref = ref(db, "data");
+    onValue(Ref, (snapshot) => {
+      const data = snapshot.val();
+      const years = Object.keys(data);
+      setYearly(years);
+      if (selectedYear && data[selectedYear] && data[selectedYear].data) {
+        const yearData = data[selectedYear].data;
+        setDataYear(yearData);
+        console.log(dataYear);
+      }
+    });
+  };
+  useEffect(() => {
+    fetchDataYear(selectedYear);
+    fetchDataCluster(selectedYear);
+    if (yearly.length > 0 && !selectedYear) {
+      setSelectedYear(yearly[0]);
+    }
+    const combinedArray = dataCluster.map((item, index) => {
+      return { ...item, ...dataYear[index] };
+    });
+
+    setCombinedData(combinedArray);
+  }, [selectedYear]);
+
+  const combinedArray = dataCluster.map((item, index) => {
+    return { ...item, ...dataYear[index] };
+  });
+  useEffect(() => {
+    fetchDataCluster();
+  }, []);
+
+  useEffect(() => {}, []);
   return (
     <>
       <header className="z-10 flex items-center justify-between w-full px-8 py-4 text-white sticky-header bg-primary">
@@ -195,30 +249,28 @@ const MainUser = () => {
             <Route
               path="/"
               element={
-                <div className="">
-                  <select
-                    name=""
-                    id=""
-                    className="w-[200px] max-w-sm text-primary input input-bordered"
-                  >
-                    <option value="">2020</option>
-                    <option value="2021">2021</option>
-                  </select>
-                </div>
+                <form>
+                  <div className="flex flex-col space-y-3">
+                    <select
+                      name="year"
+                      id="year"
+                      className="w-[200px] max-w-sm text-primary input input-bordered"
+                      value={selectedYear}
+                      onChange={(e) => setSelectedYear(e.target.value)}
+                    >
+                      <option disabled selected>
+                        Tahun
+                      </option>
+                      {yearly.map((item) => (
+                        <option value={item}>{item}</option>
+                      ))}
+                    </select>
+                  </div>
+                </form>
               }
             />
           </Routes>
         }
-        <div className="flex items-center space-x-3">
-          <Link to="/" className="flex items-center ">
-            <AiFillHome className="mr-4" />
-            Beranda
-          </Link>
-          <Link to="/info" className="flex items-center ">
-            <AiOutlineInfoCircle className="mr-4" />
-            Hasil Tangkapan
-          </Link>
-        </div>
       </header>
       {
         <Routes>
@@ -234,7 +286,17 @@ const MainUser = () => {
                   chunkedLoading
                   iconCreateFunction={createClusterCustomIcon}
                 >
-                  {markersWithImageLink.map((marker) => (
+                  {combinedArray.map((item) => (
+                    <Marker
+                      position={[item?.latitude, item?.longitude]}
+                      icon={
+                        item.cluster === 1
+                          ? customIconCluster1
+                          : customIconCluster2
+                      }
+                    />
+                  ))}
+                  {/* {markersWithImageLink.map((marker) => (
                     <Marker
                       position={marker.geocode}
                       icon={
@@ -247,7 +309,7 @@ const MainUser = () => {
                         <CardDetailData marker={marker} />
                       </Popup>
                     </Marker>
-                  ))}
+                  ))} */}
                 </MarkerClusterGroup>
                 <Legend />
               </MapContainer>

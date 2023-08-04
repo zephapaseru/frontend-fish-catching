@@ -15,6 +15,7 @@ const AddVariable = ({ setOpenAddVariable, pushData }) => {
     temperature: 0,
     catchResult: 0,
   });
+  const [openError, setOpenError] = useState(false);
 
   const [id, setId] = useState(0);
 
@@ -45,9 +46,31 @@ const AddVariable = ({ setOpenAddVariable, pushData }) => {
 
   const pushToArray = (e) => {
     e.preventDefault();
-    pushData(item);
-    setId((prevId) => prevId + 1);
-    setItem((prevItem) => ({ ...prevItem, id }));
+    if (
+      item.wave === 0 ||
+      item.wind === 0 ||
+      item.current === 0 ||
+      item.salinity === 0 ||
+      item.temperature === 0 ||
+      item.catchResult === 0
+    ) {
+      setOpenError(true);
+      setTimeout(() => {
+        setOpenError(false);
+      }, 2100);
+    } else {
+      pushData(item);
+      setId((prevId) => prevId + 1);
+      setItem((prevItem) => ({ ...prevItem, id }));
+      setItem({
+        wave: 0,
+        wind: 0,
+        current: 0,
+        salinity: 0,
+        temperature: 0,
+        catchResult: 0,
+      });
+    }
   };
 
   const handleChange = (e) => {
@@ -180,6 +203,13 @@ const AddVariable = ({ setOpenAddVariable, pushData }) => {
                 />
               </div>
             </div>
+            {openError && (
+              <div>
+                <p className="font-semibold text-center text-red-600">
+                  Masih ada data yang kosong
+                </p>
+              </div>
+            )}
             <button type="submit" className="w-full mt-6 btn btn-primary">
               Simpan
             </button>

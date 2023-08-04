@@ -5,6 +5,8 @@ import {
   AiOutlineAlignRight,
   AiFillHome,
   AiFillEnvironment,
+  AiFillCalculator,
+  AiOutlineTable,
 } from "react-icons/ai";
 import ModalLogout from "../../components/modal/ModalLogout";
 import { SiGooglemaps } from "react-icons/si";
@@ -16,6 +18,8 @@ import DataPoint from "./point/DataPoint";
 import DataVariable from "./variable/DataVariable";
 import DataResult from "./result/DataResult";
 import Home from "./home/Home";
+import DataCluster from "./cluster/DataCluster";
+import Calculate from "./calculate/Calculate";
 
 const MainAdmin = () => {
   let navigate = useNavigate();
@@ -38,10 +42,20 @@ const MainAdmin = () => {
       icon: LuWaves,
     },
     {
-      name: "Hasil Tangkapan",
-      link: "/pages/result",
-      icon: FaFish,
+      name: "Data Cluster",
+      link: "/pages/cluster",
+      icon: AiOutlineTable,
     },
+    {
+      name: "Perhitungan",
+      link: "/pages/calculate",
+      icon: AiFillCalculator,
+    },
+    // {
+    //   name: "Hasil Tangkapan",
+    //   link: "/pages/result",
+    //   icon: FaFish,
+    // },
   ];
 
   useEffect(() => {
@@ -100,6 +114,8 @@ const MainAdmin = () => {
               <Route path="/point" element={<DataPoint />} />
               <Route path="/variable" element={<DataVariable />} />
               <Route path="/result" element={<DataResult />} />
+              <Route path="/cluster" element={<DataCluster />} />
+              <Route path="/calculate" element={<Calculate />} />
             </Routes>
           </main>
         </div>

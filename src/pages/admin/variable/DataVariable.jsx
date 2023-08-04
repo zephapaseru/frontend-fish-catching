@@ -16,6 +16,14 @@ const DataVariable = () => {
   const [openError, setOpenError] = useState(false);
   const [message, setMessage] = useState("");
 
+  function removeAttributes(data, attributesToRemove) {
+    return data.map((obj) => {
+      attributesToRemove.forEach((attribute) => delete obj[attribute]);
+      return obj;
+    });
+  }
+  const attributesToRemove = ["id", "latitude", "longitude"];
+
   const pushData = (item) => {
     setData([...data, item]);
     console.log(data);
@@ -51,8 +59,12 @@ const DataVariable = () => {
           setOpenError(false);
         }, 2100);
       } else {
+        await set(ref(db, `/data/${year}`), {
+          data,
+        });
+
         const response = await axios.post("http://127.0.0.1:5000/cluster", {
-          data: normalizeData(data),
+          data: normalizeData(removeAttributes(data, attributesToRemove)),
         });
 
         const result = response.data;
@@ -60,6 +72,8 @@ const DataVariable = () => {
         await set(ref(db, `/cluster/${year}`), {
           result,
         });
+
+        setData([]);
       }
     } catch (error) {
       console.log(error);
