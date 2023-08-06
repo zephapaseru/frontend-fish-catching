@@ -1,22 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, NavLink } from "react-router-dom";
 import Header from "../../components/Header";
-import {
-  AiOutlineAlignRight,
-  AiFillHome,
-  AiFillEnvironment,
-  AiFillCalculator,
-  AiOutlineTable,
-} from "react-icons/ai";
+import { AiFillHome, AiFillCalculator, AiOutlineTable } from "react-icons/ai";
 import ModalLogout from "../../components/modal/ModalLogout";
 import { SiGooglemaps } from "react-icons/si";
 import { LuWaves } from "react-icons/lu";
-import { FaFish } from "react-icons/fa";
-import { BiMatch } from "react-icons/bi";
 import { TbLogout } from "react-icons/tb";
 import DataPoint from "./point/DataPoint";
 import DataVariable from "./variable/DataVariable";
-import DataResult from "./result/DataResult";
 import Home from "./home/Home";
 import DataCluster from "./cluster/DataCluster";
 import Calculate from "./calculate/Calculate";
@@ -113,7 +104,6 @@ const MainAdmin = () => {
               <Route path="/home" element={<Home />} />
               <Route path="/point" element={<DataPoint />} />
               <Route path="/variable" element={<DataVariable />} />
-              <Route path="/result" element={<DataResult />} />
               <Route path="/cluster" element={<DataCluster />} />
               <Route path="/calculate" element={<Calculate />} />
             </Routes>

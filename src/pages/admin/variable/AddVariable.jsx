@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../../../config/firebase";
 import { ref, onValue } from "firebase/database";
+import Loading from "../../../components/loading/Loading";
+import ToastError from "../../../components/toast/ToastError";
 
 const AddVariable = ({ setOpenAddVariable, pushData }) => {
   const [dataPoints, setDataPoints] = useState([]);
@@ -16,6 +18,7 @@ const AddVariable = ({ setOpenAddVariable, pushData }) => {
     catchResult: 0,
   });
   const [openError, setOpenError] = useState(false);
+  const [location, setLocation] = useState("Koordinat");
 
   const [id, setId] = useState(0);
 
@@ -46,6 +49,7 @@ const AddVariable = ({ setOpenAddVariable, pushData }) => {
 
   const pushToArray = (e) => {
     e.preventDefault();
+
     if (
       item.wave === 0 ||
       item.wind === 0 ||
@@ -63,6 +67,9 @@ const AddVariable = ({ setOpenAddVariable, pushData }) => {
       setId((prevId) => prevId + 1);
       setItem((prevItem) => ({ ...prevItem, id }));
       setItem({
+        id: 0,
+        latitude: "",
+        longitude: "",
         wave: 0,
         wind: 0,
         current: 0,
@@ -70,6 +77,7 @@ const AddVariable = ({ setOpenAddVariable, pushData }) => {
         temperature: 0,
         catchResult: 0,
       });
+      setLocation("Koordinat");
     }
   };
 
@@ -84,6 +92,15 @@ const AddVariable = ({ setOpenAddVariable, pushData }) => {
   useEffect(() => {
     getDataPoints();
   }, []);
+
+  useEffect(() => {
+    let coordinates = location.split(",");
+    setItem((prevItem) => ({
+      ...prevItem,
+      latitude: coordinates[0],
+      longitude: coordinates[1],
+    }));
+  }, [location]);
 
   return (
     <>
@@ -113,108 +130,114 @@ const AddVariable = ({ setOpenAddVariable, pushData }) => {
             </svg>
           </button>
         </div>
-        <div className="mt-4">
-          <form onSubmit={pushToArray}>
-            <div className="flex flex-col space-y-3">
-              <div>
-                <label className="font-semibold">Latitude</label>
-                <select
-                  name="latitude"
-                  value={item.latitude}
-                  onChange={handleChange}
-                  className="w-full mt-2 input input-bordered"
-                >
-                  {dataPoints.map((item, index) => (
-                    <option value={item.value.lat}>{item.value.lat}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="font-semibold">Longitude</label>
-                <select
-                  name="longitude"
-                  value={item.longitude}
-                  onChange={handleChange}
-                  className="w-full mt-2 input input-bordered"
-                >
-                  {dataPoints.map((item, index) => (
-                    <option value={item.value.long}>{item.value.long}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="font-semibold">Gelombang</label>
-                <input
-                  type="number"
-                  name="wave"
-                  value={item.wave}
-                  onChange={handleChange}
-                  className="w-full mt-2 input input-bordered"
-                />
-              </div>
-              <div>
-                <label className="font-semibold">Angin</label>
-                <input
-                  type="number"
-                  name="wind"
-                  value={item.wind}
-                  onChange={handleChange}
-                  className="w-full mt-2 input input-bordered"
-                />
-              </div>
-              <div>
-                <label className="font-semibold">Arus</label>
-                <input
-                  type="number"
-                  name="current"
-                  value={item.current}
-                  onChange={handleChange}
-                  className="w-full mt-2 input input-bordered"
-                />
-              </div>
-              <div>
-                <label className="font-semibold">Salinitas</label>
-                <input
-                  type="number"
-                  name="salinity"
-                  value={item.salinity}
-                  onChange={handleChange}
-                  className="w-full mt-2 input input-bordered"
-                />
-              </div>
-              <div>
-                <label className="font-semibold">Suhu Permukaan</label>
-                <input
-                  type="number"
-                  name="temperature"
-                  value={item.temperature}
-                  onChange={handleChange}
-                  className="w-full mt-2 input input-bordered"
-                />
-              </div>
-              <div>
-                <label className="font-semibold">Hasil Tangkapan</label>
-                <input
-                  type="number"
-                  name="catchResult"
-                  value={item.catchResult}
-                  onChange={handleChange}
-                  className="w-full mt-2 input input-bordered"
-                />
-              </div>
+        {dataPoints.length === 0 ? (
+          <>
+            <Loading />
+          </>
+        ) : (
+          <>
+            <div className="mt-4">
+              <form onSubmit={pushToArray}>
+                <div className="flex flex-col space-y-3">
+                  <div>
+                    <label className="font-semibold">
+                      Latitude & Longitude
+                    </label>
+                    <select
+                      name="location"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                      className="w-full mt-2 input input-bordered"
+                    >
+                      <option disabled value="Koordinat">
+                        Koordinat
+                      </option>
+                      {dataPoints.map((item, index) => (
+                        <option
+                          value={`${item.value.lat}, ${item.value.long}`}
+                          key={index}
+                        >
+                          {`${item.value.lat}, ${item.value.long}`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="font-semibold">Gelombang</label>
+                    <input
+                      type="number"
+                      name="wave"
+                      value={item.wave}
+                      onChange={handleChange}
+                      className="w-full mt-2 input input-bordered"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-semibold">Angin</label>
+                    <input
+                      type="number"
+                      name="wind"
+                      value={item.wind}
+                      onChange={handleChange}
+                      className="w-full mt-2 input input-bordered"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-semibold">Arus</label>
+                    <input
+                      type="number"
+                      name="current"
+                      value={item.current}
+                      onChange={handleChange}
+                      className="w-full mt-2 input input-bordered"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-semibold">Salinitas</label>
+                    <input
+                      type="number"
+                      name="salinity"
+                      value={item.salinity}
+                      onChange={handleChange}
+                      className="w-full mt-2 input input-bordered"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-semibold">Suhu Permukaan</label>
+                    <input
+                      type="number"
+                      name="temperature"
+                      value={item.temperature}
+                      onChange={handleChange}
+                      className="w-full mt-2 input input-bordered"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-semibold">Hasil Tangkapan</label>
+                    <input
+                      type="number"
+                      name="catchResult"
+                      value={item.catchResult}
+                      onChange={handleChange}
+                      className="w-full mt-2 input input-bordered"
+                    />
+                  </div>
+                </div>
+                {openError && (
+                  <div>
+                    <p className="font-semibold text-center text-red-600">
+                      Masih ada data yang kosong
+                    </p>
+                  </div>
+                )}
+                <button type="submit" className="w-full mt-6 btn btn-primary">
+                  Simpan
+                </button>
+              </form>
             </div>
-            {openError && (
-              <div>
-                <p className="font-semibold text-center text-red-600">
-                  Masih ada data yang kosong
-                </p>
-              </div>
-            )}
-            <button type="submit" className="w-full mt-6 btn btn-primary">
-              Simpan
-            </button>
-          </form>
-        </div>
+          </>
+        )}
       </div>
     </>
   );

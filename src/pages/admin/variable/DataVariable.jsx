@@ -4,7 +4,7 @@ import axios from "axios";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { db } from "../../../config/firebase";
 import { normalizeData } from "../../../utils/normalize";
-import { ref, set } from "firebase/database";
+import { ref, set, onValue } from "firebase/database";
 import ToastError from "../../../components/toast/ToastError";
 
 const DataVariable = () => {
@@ -15,6 +15,7 @@ const DataVariable = () => {
   const [year, setYear] = useState("");
   const [openError, setOpenError] = useState(false);
   const [message, setMessage] = useState("");
+  const [yearly, setYearly] = useState([]);
 
   function removeAttributes(data, attributesToRemove) {
     return data.map((obj) => {
@@ -26,7 +27,6 @@ const DataVariable = () => {
 
   const pushData = (item) => {
     setData([...data, item]);
-    console.log(data);
   };
 
   const handleYearChange = (e) => {
@@ -40,7 +40,24 @@ const DataVariable = () => {
     }
   };
 
-  const yearly = ["2020", "2021"];
+  const fetchDataYear = (selectedYear) => {
+    try {
+      const Ref = ref(db, "data");
+      onValue(Ref, (snapshot) => {
+        try {
+          const data = snapshot.val();
+          const years = Object.keys(data);
+          setYearly(years);
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching yearly data:", error);
+      // Handle the error or show an error message to the user.
+    }
+  };
+
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
   const getCurrentItems = () => {
@@ -80,6 +97,9 @@ const DataVariable = () => {
     }
   };
 
+  useState(() => {
+    fetchDataYear();
+  }, []);
   return (
     <>
       <div className="flex flex-col space-y-5">
@@ -147,7 +167,9 @@ const DataVariable = () => {
             </table>
           </div>
         ) : (
-          <p className="p-4 text-center border shadow">Belum Ada Data</p>
+          <p className="p-4 font-semibold text-center border shadow">
+            Belum Ada Data
+          </p>
         )}
       </div>
       <div className="flex items-center justify-center mt-4 space-x-2">
