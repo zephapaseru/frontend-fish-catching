@@ -29,6 +29,9 @@ const DataPoint = () => {
           value: value,
         });
       });
+
+      data.sort((a, b) => b.value.createdAt - a.value.createdAt);
+
       setData(data);
     });
   };
@@ -65,106 +68,102 @@ const DataPoint = () => {
 
   return (
     <>
-      {data.length === 0 ? (
-        <Loading />
-      ) : (
-        <>
-          <div className="flex flex-col space-y-5">
-            <h3 className="text-[#191635] font-bold text-xl">
-              Daftar Titik Penangkapan Ikan
-            </h3>
-            <button
-              onClick={() => setOpenAddPoint(true)}
-              className="max-w-[200px] btn btn-primary"
-            >
-              Tambah Titik
-            </button>
-            {data.length !== 0 ? (
-              <div className="w-full overflow-x-auto">
-                <table className="table w-full">
-                  <thead>
-                    <tr>
-                      <th>Titik Koordinat</th>
-                      <th className="text-center">Aksi</th>
+      <>
+        <div className="flex flex-col space-y-5">
+          <h3 className="text-[#191635] font-bold text-xl">
+            Daftar Titik Penangkapan Ikan
+          </h3>
+          <button
+            onClick={() => setOpenAddPoint(true)}
+            className="max-w-[200px] btn btn-primary"
+          >
+            Tambah Titik
+          </button>
+          {data.length !== 0 ? (
+            <div className="w-full overflow-x-auto">
+              <table className="table w-full">
+                <thead>
+                  <tr>
+                    <th>Titik Koordinat</th>
+                    <th className="text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getCurrentItems().map((item, index) => (
+                    <tr key={index + 1}>
+                      <td className="px-6 py-4">
+                        {item.value.lat}, {item.value.long}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center px-6 py-4 space-x-4 text-right">
+                          <button
+                            className="btn w-28 btn-sm"
+                            onClick={() => {
+                              setSelectedItem(item);
+                              setOpenEditPoint(true);
+                            }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="w-28 btn btn-error btn-sm"
+                            onClick={() => {
+                              setSelectedItem(item);
+                              setOpenModalDelete(true);
+                            }}
+                          >
+                            Hapus
+                          </button>
+                        </div>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {getCurrentItems().map((item, index) => (
-                      <tr key={index + 1}>
-                        <td className="px-6 py-4">
-                          {item.value.lat}, {item.value.long}
-                        </td>
-                        <td className="px-6 py-4">
-                          <div className="flex justify-center px-6 py-4 space-x-4 text-right">
-                            <button
-                              className="btn w-28 btn-sm"
-                              onClick={() => {
-                                setSelectedItem(item);
-                                setOpenEditPoint(true);
-                              }}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="w-28 btn btn-error btn-sm"
-                              onClick={() => {
-                                setSelectedItem(item);
-                                setOpenModalDelete(true);
-                              }}
-                            >
-                              Hapus
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <p className="p-4 text-center border shadow">Belum Ada Data</p>
-            )}
-          </div>
-          {data.length > itemsPerPage && (
-            <div className="flex justify-center mt-3">
-              <button
-                className="mx-1 btn btn-sm btn-secondary"
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-              >
-                <MdArrowBack />
-              </button>
-              <button
-                className="mx-1 btn btn-sm btn-secondary"
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, getTotalPages()))
-                }
-                disabled={currentPage === getTotalPages()}
-              >
-                <MdArrowForward />
-              </button>
+                  ))}
+                </tbody>
+              </table>
             </div>
+          ) : (
+            <p className="p-4 text-center border shadow">Belum Ada Data</p>
           )}
-          {openAddPoint && <AddPoint setOpenAddPoint={setOpenAddPoint} />}
-          {openEditPoint && (
-            <EditPoint
-              selectedItem={selectedItem}
-              setOpenEditPoint={setOpenEditPoint}
-            />
-          )}
-          {openModalDelete && (
-            <ModalDelete
-              title="Hapus Data"
-              message="Apakah Anda yakin ingin menghapus Data ini?"
-              onClose={() => {
-                setOpenModalDelete(false);
-                setSelectedItem(null);
-              }}
-              onConfirm={handleDelete}
-            />
-          )}
-        </>
-      )}
+        </div>
+        {data.length > itemsPerPage && (
+          <div className="flex justify-center mt-3">
+            <button
+              className="mx-1 btn btn-sm btn-secondary"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              <MdArrowBack />
+            </button>
+            <button
+              className="mx-1 btn btn-sm btn-secondary"
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, getTotalPages()))
+              }
+              disabled={currentPage === getTotalPages()}
+            >
+              <MdArrowForward />
+            </button>
+          </div>
+        )}
+        {openAddPoint && <AddPoint setOpenAddPoint={setOpenAddPoint} />}
+        {openEditPoint && (
+          <EditPoint
+            selectedItem={selectedItem}
+            setOpenEditPoint={setOpenEditPoint}
+          />
+        )}
+        {openModalDelete && (
+          <ModalDelete
+            title="Hapus Data"
+            message="Apakah Anda yakin ingin menghapus Data ini?"
+            onClose={() => {
+              setOpenModalDelete(false);
+              setSelectedItem(null);
+            }}
+            onConfirm={handleDelete}
+          />
+        )}
+      </>
     </>
   );
 };

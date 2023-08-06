@@ -1,33 +1,23 @@
 import React, { useState } from "react";
 import { uid } from "uid";
-import { db, app } from "../../../config/firebase";
-import { set, ref } from "firebase/database";
-import {
-  getStorage,
-  ref as refStorage,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
+import { db } from "../../../config/firebase";
+import { set, ref, serverTimestamp } from "firebase/database";
 
 const AddPoint = ({ setOpenAddPoint }) => {
   const [long, setLong] = useState("");
   const [lat, setLat] = useState("");
-  const [image, setImage] = useState(null);
 
   const AddPoint = async (e) => {
     e.preventDefault();
     const uuid = uid();
-
-    const storageRef = refStorage(getStorage(app), `/images/${uuid}`);
+    const timestamp = serverTimestamp();
 
     try {
-      const snapshot = await uploadBytes(storageRef, image);
-      const imageUrl = await getDownloadURL(snapshot.ref);
-
       await set(ref(db, `/points/${uuid}`), {
         long,
         lat,
-        imageUrl: imageUrl,
+        createdAt: timestamp,
+        updatedAt: timestamp,
       });
 
       setOpenAddPoint(false);
@@ -79,14 +69,6 @@ const AddPoint = ({ setOpenAddPoint }) => {
               value={long}
               onChange={(e) => setLong(e.target.value)}
               className="w-full mt-3 input input-bordered"
-            />
-          </div>
-          <div className="mt-4">
-            <label className="text-lg font-semibold ">Gambar</label>
-            <input
-              type="file"
-              onChange={(e) => setImage(e.target.files[0])}
-              className="w-full mt-3 file-input file-input-bordered"
             />
           </div>
           <button type="submit" className="w-full mt-6 btn btn-primary">

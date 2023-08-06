@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import ToastError from "../components/toast/ToastError";
 import ToastSuccess from "../components/toast/ToastSuccess";
 import Logo from "../assets/ic_logo.png";
+import Header from "../components/Header";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -59,6 +60,7 @@ const LoginPage = () => {
     <>
       {isSuccess && <ToastSuccess message={message} />}
       {isError && <ToastError message={message} />}
+      <Header />
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg w-[600px] rounded-xl">
           <div className="w-90%">

@@ -12,7 +12,7 @@ const DataCluster = () => {
   const [combinedData, setCombinedData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [dataPage, setDataPage] = useState(1);
-  const dataRowsPerPage = 2;
+  const dataRowsPerPage = 5;
 
   const fetchDataCluster = (selectedYear) => {
     try {

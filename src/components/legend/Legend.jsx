@@ -8,11 +8,11 @@ const Legend = () => {
       <h6 className="font-bold ">Legenda</h6>
       <div className="flex items-center mt-6 space-x-4 legend-item">
         <img src={ClusterOne} alt="" className="h-12" />
-        <p>Cluster Banyak Ikan</p>
+        <p>Klaster Banyak Ikan</p>
       </div>
       <div className="flex items-center mt-6 space-x-4 legend-item">
         <img src={ClusterTwo} alt="" className="h-12" />
-        <p>Cluster Sedikit Ikan</p>
+        <p>Klaster Sedikit Ikan</p>
       </div>
     </div>
   );
