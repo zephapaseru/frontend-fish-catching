@@ -11,35 +11,16 @@ import {
 const EditPoint = ({ selectedItem, setOpenEditPoint }) => {
   const [long, setLong] = useState(selectedItem.value.long);
   const [lat, setLat] = useState(selectedItem.value.lat);
-  const [image, setImage] = useState(null);
 
   const editPoint = async (e) => {
     try {
       e.preventDefault();
 
-      const storageRef = refStorage(
-        getStorage(app),
-        `/images/${selectedItem.uuid}`
-      );
-
-      if (!image) {
-        await update(ref(db, `/points/${selectedItem.key}`), {
-          long,
-          lat,
-        });
-        setOpenEditPoint(false);
-      } else {
-        const snapshot = await uploadBytes(storageRef, image);
-        const imageUrl = await getDownloadURL(snapshot.ref);
-
-        await update(ref(db, `/points/${selectedItem.key}`), {
-          long,
-          lat,
-          imageUrl: imageUrl,
-        });
-
-        setOpenEditPoint(false);
-      }
+      await update(ref(db, `/points/${selectedItem.key}`), {
+        long,
+        lat,
+      });
+      setOpenEditPoint(false);
     } catch (error) {
       // Handle the error here
       console.error("An error occurred:", error);
@@ -91,14 +72,6 @@ const EditPoint = ({ selectedItem, setOpenEditPoint }) => {
               value={long}
               onChange={(e) => setLong(e.target.value)}
               className="w-full mt-3 input input-bordered"
-            />
-          </div>
-          <div className="mt-4">
-            <label className="text-lg font-semibold ">Gambar</label>
-            <input
-              type="file"
-              onChange={(e) => setImage(e.target.files[0])}
-              className="w-full mt-3 file-input file-input-bordered"
             />
           </div>
           <button type="submit" className="w-full mt-6 btn btn-primary">
