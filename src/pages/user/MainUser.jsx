@@ -172,7 +172,7 @@ const MainUser = () => {
                         <Marker
                           position={[item?.latitude, item?.longitude]}
                           icon={
-                            item.cluster === 1
+                            item.cluster === 0
                               ? customIconCluster1
                               : customIconCluster2
                           }
