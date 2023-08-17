@@ -17,7 +17,7 @@ const Calculate = () => {
   const centerClusterRowsPerPage = 2;
 
   const [dataPage, setDataPage] = useState(1);
-  const dataRowsPerPage = 3;
+  const dataRowsPerPage = 5;
 
   const fetchDataCluster = (year) => {
     const Ref = ref(db, "cluster");
@@ -126,7 +126,7 @@ const Calculate = () => {
                     className="mt-4 input input-bordered text-primary"
                   />
                 </div>
-                <div>
+                {/* <div>
                   <h5 className="font-bold">Parameter Kekaburan 2</h5>
                   <input
                     type="text"
@@ -134,7 +134,7 @@ const Calculate = () => {
                     disabled
                     className="mt-4 input input-bordered text-primary"
                   />
-                </div>
+                </div> */}
                 <div>
                   <h5 className="font-bold">
                     Inisialisasi pusat klaster secara acak
