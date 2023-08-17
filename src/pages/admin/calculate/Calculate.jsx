@@ -268,7 +268,7 @@ const Calculate = () => {
                     </button>
                   </div>
                 </div>
-                <div>
+                {/* <div>
                   <h5 className="font-bold">Nilai</h5>
                   <input
                     type="text"
@@ -276,7 +276,7 @@ const Calculate = () => {
                     disabled
                     className="mt-4 input input-bordered text-primary"
                   />
-                </div>
+                </div> */}
               </>
             )}
           </div>
