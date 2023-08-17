@@ -59,9 +59,9 @@ const MainAdmin = () => {
   return (
     <>
       <Header />
-      <div className="overflow-hidden">
-        <div className="flex">
-          <aside className="w-64 bg-primary text-white sticky-aside h-screen max-h-[800px] py-8 px-4 flex flex-col justify-between">
+      <div className="h-screen overflow-hidden">
+        <div className="flex ">
+          <aside className="flex flex-col w-64 h-screen px-4 py-8 text-white bg-primary sticky-aside">
             <div className="relative flex flex-col gap-4 mt-4">
               {menus?.map((menu, i) => (
                 <NavLink
@@ -85,7 +85,7 @@ const MainAdmin = () => {
             </div>
             <button
               onClick={() => setOpenModalLogout(true)}
-              className="group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-white  hover:text-primary hover:transparent rounded-md"
+              className="group mt-[500px] flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-white  hover:text-primary hover:transparent rounded-md"
             >
               <div>
                 <TbLogout size="20" />

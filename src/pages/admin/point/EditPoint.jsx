@@ -1,12 +1,6 @@
 import React, { useState } from "react";
-import { app, db } from "../../../config/firebase";
-import { getDatabase, ref, onValue, update } from "firebase/database";
-import {
-  getStorage,
-  ref as refStorage,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
+import { db } from "../../../config/firebase";
+import { ref, update } from "firebase/database";
 
 const EditPoint = ({ selectedItem, setOpenEditPoint }) => {
   const [long, setLong] = useState(selectedItem.value.long);
