@@ -6,11 +6,11 @@ import { Icon, divIcon, point } from "leaflet";
 import CardDetailData from "../../components/card/CardDetailData";
 import Legend from "../../components/legend/Legend";
 import Logo from "../../assets/ic_logo.png";
-import { Routes, Route } from "react-router-dom";
-import Information from "./info/Information";
+import { Routes, Route, Link } from "react-router-dom";
 import { db } from "../../config/firebase";
 import { ref, onValue } from "firebase/database";
 import Loading from "../../components/loading/Loading";
+import ComparisonChart from "./chart/ComparisonChart";
 
 const createClusterCustomIcon = function (cluster) {
   return new divIcon({
@@ -128,24 +128,45 @@ const MainUser = () => {
                 <Route
                   path="/"
                   element={
-                    <form>
-                      <div className="flex flex-col space-y-3">
-                        <select
-                          name="year"
-                          id="year"
-                          className="w-[200px] max-w-sm text-primary input input-bordered"
-                          value={selectedYear}
-                          onChange={(e) => setSelectedYear(e.target.value)}
-                        >
-                          <option disabled selected>
-                            Tahun
-                          </option>
-                          {yearly.map((item) => (
-                            <option value={item}>{item}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </form>
+                    <div className="flex items-center space-x-6">
+                      <Link
+                        to="/chart"
+                        className="px-8 py-2 font-semibold bg-white rounded-full text-primary"
+                      >
+                        Grafik
+                      </Link>
+                      <form>
+                        <div className="flex flex-col space-y-3">
+                          <select
+                            name="year"
+                            id="year"
+                            className="w-[200px] max-w-sm text-primary input input-bordered"
+                            value={selectedYear}
+                            onChange={(e) => setSelectedYear(e.target.value)}
+                          >
+                            <option disabled selected>
+                              Tahun
+                            </option>
+                            {yearly.map((item) => (
+                              <option value={item}>{item}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </form>
+                    </div>
+                  }
+                />
+                <Route
+                  path="/chart"
+                  element={
+                    <div className="flex items-center space-x-6">
+                      <Link
+                        to="/"
+                        className="px-8 py-2 font-semibold bg-white rounded-full text-primary"
+                      >
+                        Peta
+                      </Link>
+                    </div>
                   }
                 />
               </Routes>
@@ -187,7 +208,7 @@ const MainUser = () => {
                   </MapContainer>
                 }
               />
-              <Route path="/info" element={<Information />} />
+              <Route path="/chart" element={<ComparisonChart />} />
             </Routes>
           }
         </>
