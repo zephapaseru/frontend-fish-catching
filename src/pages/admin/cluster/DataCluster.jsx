@@ -3,6 +3,7 @@ import { db } from "../../../config/firebase";
 import { ref, onValue } from "firebase/database";
 import { MdArrowBack, MdArrowForward } from "react-icons/md";
 import Loading from "../../../components/loading/Loading";
+import Description from "../../../components/description/Description";
 
 const DataCluster = () => {
   const [dataCluster, setDataCluster] = useState([]);
@@ -149,7 +150,7 @@ const DataCluster = () => {
                         <td>{item.salinity}</td>
                         <td>{item.temperature}</td>
                         <td>{item.catchResult}</td>
-                        <td>{item.cluster}</td>
+                        <td>{item.cluster + 1}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -183,6 +184,7 @@ const DataCluster = () => {
                   </button>
                 </div>
               </div>
+              <Description />
             </>
           )}
         </>

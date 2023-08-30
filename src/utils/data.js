@@ -79,4 +79,26 @@ export const staticDataArrays = [
   [125, 122, 624, 567],
 ];
 
+export const fishes = [
+  "Layang",
+  "Cakalang",
+  "Baby Tuna",
+  "Tongkol",
+  "Selar",
+  "Sunglir",
+  "Madidihang",
+];
+
+export const dataFishes = [
+  [
+    [300, 120, 150, 170],
+    [200, 100, 120, 140],
+    [120, 70, 80, 90],
+    [100, 50, 60, 70],
+    [80, 30, 30, 30],
+    [80, 30, 30, 30],
+    [30, 10, 10, 10],
+    [17, 10, 10, 14],
+  ],
+];
 export const labels = ["2019", "2020", "2021", "2022"];

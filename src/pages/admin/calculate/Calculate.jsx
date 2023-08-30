@@ -3,6 +3,7 @@ import { db } from "../../../config/firebase";
 import { ref, onValue } from "firebase/database";
 import Loading from "../../../components/loading/Loading";
 import { MdArrowForward, MdArrowBack } from "react-icons/md";
+import Description from "../../../components/description/Description";
 
 const Calculate = () => {
   const [yearly, setYearly] = useState([]);
@@ -233,7 +234,7 @@ const Calculate = () => {
                                 <td>{item?.salinity?.toFixed(2)}</td>
                                 <td>{item?.temperature?.toFixed(2)}</td>
                                 <td>{item?.catchResult?.toFixed(2)}</td>
-                                <td>{item?.cluster}</td>
+                                <td>{item?.cluster + 1}</td>
                               </tr>
                             );
                           })}
@@ -268,6 +269,7 @@ const Calculate = () => {
                     </button>
                   </div>
                 </div>
+                <Description />
                 {/* <div>
                   <h5 className="font-bold">Nilai</h5>
                   <input
